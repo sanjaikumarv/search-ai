@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import type React from "react"
@@ -9,44 +7,10 @@ import { Search } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Card, CardContent } from "@/components/ui/card"
-import ArcDiagram from "@/components/ArcDiagram"
-// import { performSearch } from "@/app/actions/search-actions"
-type Resource = {
-  title: string;
-  url: string;
-  description: string;
-};
+import { savePrompts } from "@/lib/db.utils"
+import { PromptData } from "@/types"
 
-type TechStack = {
-  name: string;
-  description: string;
-  isRoot: boolean;
-  category: string;
-  codeExample: string;
-  details: string[];
-  useCases: string[];
-  resources: Resource[];
-};
-
-type Language = {
-  name: string;
-  description: string;
-  isRoot: boolean;
-  category: string;
-  codeExample: string;
-  details: string[];
-  useCases: string[];
-  resources: Resource[];
-  techStacks: TechStack[];
-};
-
-type PromptData = {
-  prompt: string;
-  languages: Language[];
-};
-
-
-export default function SearchInput({ setData, data }: { setData: React.Dispatch<React.SetStateAction<PromptData | null>>, data: PromptData | null }) {
+export default function SearchInput({ setData }: { setData: React.Dispatch<React.SetStateAction<PromptData | null>> }) {
   const [query, setQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
   const [result, setResult] = useState<string | null>(null)
@@ -135,7 +99,7 @@ export default function SearchInput({ setData, data }: { setData: React.Dispatch
     }
   
     I need this type of JSON response.
-    
+
    I need my query related all languages and language related all tech stacks.
 
     and need some code example from the codeExample json key in string format.
@@ -157,15 +121,18 @@ export default function SearchInput({ setData, data }: { setData: React.Dispatch
           messages: [{ role: 'user', content: message }]
         })
       });
-      setIsSearching(false)
       const data = await response.json();
       const content = JSON.parse(data.choices[0].message.content)
-      console.log("cntent", content)
-      setData(content)
-    } catch (error: any) {
+      await savePrompts({ prompt: message, languages: content.languages })
       setIsSearching(false)
-      console.log("error", error)
-      window.alert(error.response.data.message.error)
+      setData(content)
+    } catch (error: unknown) {
+      setIsSearching(false)
+      if (error instanceof Error && error.message) {
+        window.alert(error.message);
+      } else {
+        window.alert("An unexpected error occurred.");
+      }
     }
 
 
@@ -174,7 +141,7 @@ export default function SearchInput({ setData, data }: { setData: React.Dispatch
 
 
   return (
-    <div className="container  p-8 ">
+    <div className="">
       <h1 className="text-3xl font-bold mb-8 text-center">AI Search</h1>
 
       <form onSubmit={handleSearch} className="mb-8 mx-auto max-w-3xl">

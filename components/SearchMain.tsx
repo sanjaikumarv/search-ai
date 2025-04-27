@@ -1,63 +1,37 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-/* eslint-disable @typescript-eslint/no-explicit-any */
+
 "use client"
 
 import type React from "react"
 
-import { useState } from "react"
-import { Search } from "lucide-react"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Card, CardContent } from "@/components/ui/card"
+import { useEffect, useState } from "react"
 import ArcDiagram from "@/components/ArcDiagram"
 import SearchInput from "./SearchInput"
 import { Sidebar } from "./sidebar"
-// import { performSearch } from "@/app/actions/search-actions"
-type Resource = {
-    title: string;
-    url: string;
-    description: string;
-};
-
-type TechStack = {
-    name: string;
-    description: string;
-    isRoot: boolean;
-    category: string;
-    codeExample: string;
-    details: string[];
-    useCases: string[];
-    resources: Resource[];
-};
-
-type Language = {
-    name: string;
-    description: string;
-    isRoot: boolean;
-    category: string;
-    codeExample: string;
-    details: string[];
-    useCases: string[];
-    resources: Resource[];
-    techStacks: TechStack[];
-};
-
-type PromptData = {
-    prompt: string;
-    languages: Language[];
-};
+import { getAllPrompts } from "@/lib/db.utils"
+import { PromptData } from "@/types"
 
 
 export default function SearchMain() {
 
     const [data, setData] = useState<PromptData | null>(null)
+    const [prompts, setPrompts] = useState<PromptData[] | null>(null)
+    useEffect(() => {
+        async function fetchData() {
+            const { data } = await getAllPrompts();
+            setPrompts(data);
+        }
+        fetchData();
+    }, [data?.prompt])
+
+
 
     return (
-        <div className="container  p-8 ">
+        <div className="">
             <div className="flex h-screen">
-                <Sidebar />
+                <Sidebar prompts={prompts || []} setData={setData} />
                 <div className="flex-1">
-                    <SearchInput setData={setData} data={data} />
+                    <SearchInput setData={setData} />
+
                     {data &&
                         <ArcDiagram data={data} />
                     }
