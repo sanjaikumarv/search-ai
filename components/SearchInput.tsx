@@ -34,9 +34,8 @@ export default function SearchInput({ setData }: { setData: React.Dispatch<React
 
 
   return (
-    <div className="">
+    <div>
       <h1 className="text-3xl font-bold mb-8 text-center">AI Search</h1>
-
       <form onSubmit={handleSearch} className="mb-8 mx-auto max-w-3xl">
         <div className="flex gap-2">
           <Input

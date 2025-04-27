@@ -26,7 +26,7 @@ export default function SearchMain() {
 
 
     return (
-        <div className="">
+        <div>
             <div className="flex h-screen">
                 <Sidebar prompts={prompts || []} setData={setData} />
                 <div className="flex-1">
@@ -37,8 +37,6 @@ export default function SearchMain() {
                     }
                 </div>
             </div>
-
-
         </div>
     )
 }

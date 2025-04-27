@@ -1,16 +1,18 @@
 import { PromptData } from "@/types";
 import { getQueryFromContent, mutation, query } from "./queries";
 import axios from "axios";
+import { openAiSecretKey, openAiApiUrl, supabaseAnonKey, supabaseUrl } from "./env";
+
+
 
 export async function getAllPrompts() {
-
     try {
-        const { data: { data: { prompt_datasCollection: { edges = [] } = {} } = {} } = {} } = await axios.post(process.env.NEXT_PUBLIC_SUBABASE_URL!, {
+        const { data: { data: { prompt_datasCollection: { edges = [] } = {} } = {} } = {} } = await axios.post(supabaseUrl!, {
             query: query
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'apikey': process.env.NEXT_PUBLIC_SUPABASE_ACCESS_KEY
+                'apikey': supabaseAnonKey
             },
         });
         return edges || []
@@ -23,7 +25,7 @@ export async function getAllPrompts() {
 
 export async function savePrompts(payloadData: PromptData) {
     try {
-        const data = await axios.post(process.env.NEXT_PUBLIC_SUBABASE_URL!, {
+        const data = await axios.post(supabaseUrl!, {
             query: mutation,
             variables: {
                 prompt: payloadData.prompt,
@@ -32,7 +34,7 @@ export async function savePrompts(payloadData: PromptData) {
         }, {
             headers: {
                 'Content-Type': 'application/json',
-                'apikey': process.env.NEXT_PUBLIC_SUPABASE_ACCESS_KEY!
+                'apikey': supabaseAnonKey
             },
         });
 
@@ -45,17 +47,17 @@ export async function savePrompts(payloadData: PromptData) {
 
 export async function getDataByAI(message: string) {
     try {
-        const response = await axios.post('https://api.openai.com/v1/chat/completions', {
+        const response = await axios.post(openAiApiUrl, {
             model: 'gpt-3.5-turbo',
             messages: [{ role: 'user', content: getQueryFromContent(message) }]
         }, {
             method: 'POST',
             headers: {
-                'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+                'Authorization': `Bearer ${openAiSecretKey}`,
                 'Content-Type': 'application/json'
             },
         });
-        return JSON.parse(response?.data?.choices[0]?.message?.content) || { prompt: "", languages: [] };
+        return JSON.parse(response?.data?.choices[0]?.message?.content)
     } catch (error: unknown) {
         if (error instanceof Error && error.message) {
             window.alert(error.message);
