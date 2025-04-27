@@ -29,7 +29,7 @@ export default function SearchMain() {
         <div>
             <div className="flex h-screen">
                 <Sidebar prompts={prompts || []} setData={setData} />
-                <div className="flex-1">
+                <div className="flex-1 mt-5">
                     <SearchInput setData={setData} />
 
                     {data &&

@@ -22,8 +22,8 @@ export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: 
           </Button>
         </Link>
       </div>
-      <div className="p-4 border-b">
-        <h2 className="font-semibold mb-2">Collections</h2>
+      <div className="px-4 pt-4">
+        <h2 className="font-semibold">Collections</h2>
       </div>
       <ScrollArea className="flex-1">
         <div className="p-2">
