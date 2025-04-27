@@ -18,7 +18,6 @@ export default function SearchMain() {
     useEffect(() => {
         async function fetchData() {
             const data = await getAllPrompts();
-            console.log("data--->", data)
             setPrompts(data || []);
         }
         fetchData();
