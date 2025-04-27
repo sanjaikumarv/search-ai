@@ -383,9 +383,9 @@ export default function ArcDiagram({ data }) {
                 </div>
 
                 {/* Right side - Details panel */}
-                <div ref={detailsPanelRef} className="w-full max-h-screen overflow-y-scroll fixed md:w-2/5  top-0 right-0 bg-white rounded-bl-lg rounded-tl-lg shadow-lg ">
+                <div ref={detailsPanelRef} className="w-full  overflow-y-scroll fixed md:w-2/5  top-0 right-0 bg-white rounded-bl-lg rounded-tl-lg shadow-lg ">
                     {selectedNode && selectedNode.data && (
-                        <div className=" overflow-visible">
+                        <div className="h-screen overflow-visible">
                             {/* Header */}
                             <div className="p-4 border-b bg-gray-50">
                                 <div className="flex items-start justify-between">
@@ -442,12 +442,15 @@ export default function ArcDiagram({ data }) {
                                             </ul>
                                         </div>
                                     )}
-                                <div className="p-4">
-                                    <h5 className="font-bold text-gray-800 mt-2">Code Example:</h5>
-                                    <pre className="bg-gray-800 max-h-[300px] overflow-auto text-white p-4 rounded-lg overflow-x-auto">
-                                        <code>{selectedNode.codeExample}</code>
-                                    </pre>
-                                </div>
+                                {selectedNode.codeExample &&
+                                    <div className="p-4">
+                                        <h5 className="font-bold text-gray-800 mt-2">Code Example:</h5>
+                                        <pre className="bg-gray-800 max-h-[300px] overflow-auto text-white p-4 rounded-lg overflow-x-auto">
+                                            <code>{selectedNode.codeExample}</code>
+                                        </pre>
+                                    </div>
+                                }
+
                                 {selectedNode.data.resources &&
                                     selectedNode.data.resources.length > 0 &&
                                     selectedNode.data.resources[0].title !== "" && (

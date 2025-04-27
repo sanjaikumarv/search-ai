@@ -56,7 +56,7 @@ export default function SearchMain() {
         <div className="container  p-8 ">
             <div className="flex h-screen">
                 <Sidebar />
-                <div className="flex-1 overflow-auto">
+                <div className="flex-1">
                     <SearchInput setData={setData} data={data} />
                     {data &&
                         <ArcDiagram data={data} />

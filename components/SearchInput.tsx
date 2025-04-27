@@ -12,49 +12,49 @@ import { Card, CardContent } from "@/components/ui/card"
 import ArcDiagram from "@/components/ArcDiagram"
 // import { performSearch } from "@/app/actions/search-actions"
 type Resource = {
-    title: string;
-    url: string;
-    description: string;
+  title: string;
+  url: string;
+  description: string;
 };
 
 type TechStack = {
-    name: string;
-    description: string;
-    isRoot: boolean;
-    category: string;
-    codeExample: string;
-    details: string[];
-    useCases: string[];
-    resources: Resource[];
+  name: string;
+  description: string;
+  isRoot: boolean;
+  category: string;
+  codeExample: string;
+  details: string[];
+  useCases: string[];
+  resources: Resource[];
 };
 
 type Language = {
-    name: string;
-    description: string;
-    isRoot: boolean;
-    category: string;
-    codeExample: string;
-    details: string[];
-    useCases: string[];
-    resources: Resource[];
-    techStacks: TechStack[];
+  name: string;
+  description: string;
+  isRoot: boolean;
+  category: string;
+  codeExample: string;
+  details: string[];
+  useCases: string[];
+  resources: Resource[];
+  techStacks: TechStack[];
 };
 
 type PromptData = {
-    prompt: string;
-    languages: Language[];
+  prompt: string;
+  languages: Language[];
 };
 
 
 export default function SearchInput({ setData, data }: { setData: React.Dispatch<React.SetStateAction<PromptData | null>>, data: PromptData | null }) {
-    const [query, setQuery] = useState("")
-    const [isSearching, setIsSearching] = useState(false)
-    const [result, setResult] = useState<string | null>(null)
+  const [query, setQuery] = useState("")
+  const [isSearching, setIsSearching] = useState(false)
+  const [result, setResult] = useState<string | null>(null)
 
-    const handleSearch = async (e: React.FormEvent) => {
-        e.preventDefault()
-        if (!query.trim()) return
-        const message = `
+  const handleSearch = async (e: React.FormEvent) => {
+    e.preventDefault()
+    if (!query.trim()) return
+    const message = `
     ${query}
   
     I need all technology details about ${query}.
@@ -100,7 +100,7 @@ export default function SearchInput({ setData, data }: { setData: React.Dispatch
               "description": ""
             }
           ],
-          "techStacks": [
+           "techStacks": [
             {
               "name": "",
               "description": "",
@@ -129,88 +129,91 @@ export default function SearchInput({ setData, data }: { setData: React.Dispatch
                 }
               ]
             }
-          ]
+          ] 
         }
       ]
     }
   
     I need this type of JSON response.
-    .
-    I need my query related all languages and language related all tech stacks.
+    
+   I need my query related all languages and language related all tech stacks.
 
-    Provide detailed language and tech stack information corresponding to my ${query}.
+    and need some code example from the codeExample json key in string format.
+
+    Provide detailed all language information corresponding to my ${query}.
   `;
 
-        setIsSearching(true)
-        setResult(null)
-        try {
-            const response = await fetch('https://api.openai.com/v1/chat/completions', {
-                method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
-                    'Content-Type': 'application/json'
-                },
-                body: JSON.stringify({
-                    model: 'gpt-3.5-turbo',
-                    messages: [{ role: 'user', content: message }]
-                })
-            });
-            setIsSearching(false)
-            const data = await response.json();
-            const content = JSON.parse(data.choices[0].message.content)
-            console.log("cntent", content)
-            setData(content)
-        } catch (error: any) {
-            setIsSearching(false)
-            window.alert(error.response.data.message)
-        }
-
-
+    setIsSearching(true)
+    setResult(null)
+    try {
+      const response = await fetch('https://api.openai.com/v1/chat/completions', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${process.env.NEXT_PUBLIC_OPENAI_API_KEY}`,
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          model: 'gpt-3.5-turbo',
+          messages: [{ role: 'user', content: message }]
+        })
+      });
+      setIsSearching(false)
+      const data = await response.json();
+      const content = JSON.parse(data.choices[0].message.content)
+      console.log("cntent", content)
+      setData(content)
+    } catch (error: any) {
+      setIsSearching(false)
+      console.log("error", error)
+      window.alert(error.response.data.message.error)
     }
 
 
+  }
 
-    return (
-        <div className="container  p-8 ">
-            <h1 className="text-3xl font-bold mb-8 text-center">AI Search</h1>
 
-            <form onSubmit={handleSearch} className="mb-8 mx-auto max-w-3xl">
-                <div className="flex gap-2">
-                    <Input
-                        type="text"
-                        placeholder="Ask anything..."
-                        value={query}
-                        onChange={(e) => setQuery(e.target.value)}
-                        className="flex-1"
-                    />
-                    <Button type="submit" disabled={isSearching}>
-                        {isSearching ? (
-                            <div className="flex items-center">
-                                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                                Searching...
-                            </div>
-                        ) : (
-                            <>
-                                <Search className="mr-2 h-4 w-4" />
-                                Search
-                            </>
-                        )}
-                    </Button>
-                </div>
-            </form>
 
-            {result && (
-                <div className="space-y-4">
-                    <Card>
-                        <CardContent className="pt-6">
-                            <div className="prose dark:prose-invert max-w-none">
-                                <div dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, "<br />") }} />
-                            </div>
-                        </CardContent>
-                    </Card>
-                </div>
+  return (
+    <div className="container  p-8 ">
+      <h1 className="text-3xl font-bold mb-8 text-center">AI Search</h1>
+
+      <form onSubmit={handleSearch} className="mb-8 mx-auto max-w-3xl">
+        <div className="flex gap-2">
+          <Input
+            type="text"
+            placeholder="Ask anything..."
+            value={query}
+            onChange={(e) => setQuery(e.target.value)}
+            className="flex-1"
+          />
+          <Button type="submit" disabled={isSearching}>
+            {isSearching ? (
+              <div className="flex items-center">
+                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
+                Searching...
+              </div>
+            ) : (
+              <>
+                <Search className="mr-2 h-4 w-4" />
+                Search
+              </>
             )}
-
+          </Button>
         </div>
-    )
+      </form>
+
+      {result && (
+        <div className="space-y-4">
+          <Card>
+            <CardContent className="pt-6">
+              <div className="prose dark:prose-invert max-w-none">
+                <div dangerouslySetInnerHTML={{ __html: result.replace(/\n/g, "<br />") }} />
+              </div>
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+    </div>
+  )
 }
