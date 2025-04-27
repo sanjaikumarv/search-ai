@@ -27,11 +27,11 @@ export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: 
       </div>
       <ScrollArea className="flex-1">
         <div className="p-2">
-          {prompts.map((collection: any) => (
+          {prompts.map(({ node: collection }: any) => (
             <div key={collection.id} className="mb-2">
               <div
                 className="flex items-center p-2 rounded-md hover:bg-muted cursor-pointer"
-                onClick={() => setData(collection)}
+                onClick={() => setData({ prompt: collection.prompt, languages: JSON.parse(collection.languages) })}
               >
                 {prompts[collection.id] ? (
                   <ChevronDown className="h-4 w-4 mr-1" />

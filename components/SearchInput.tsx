@@ -123,7 +123,7 @@ export default function SearchInput({ setData }: { setData: React.Dispatch<React
       });
       const data = await response.json();
       const content = JSON.parse(data.choices[0].message.content)
-      await savePrompts({ prompt: message, languages: content.languages })
+      await savePrompts(content)
       setIsSearching(false)
       setData(content)
     } catch (error: unknown) {

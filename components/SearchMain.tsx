@@ -17,8 +17,9 @@ export default function SearchMain() {
     const [prompts, setPrompts] = useState<PromptData[] | null>(null)
     useEffect(() => {
         async function fetchData() {
-            const { data } = await getAllPrompts();
-            setPrompts(data);
+            const data = await getAllPrompts();
+            console.log("data--->", data)
+            setPrompts(data || []);
         }
         fetchData();
     }, [data?.prompt])
