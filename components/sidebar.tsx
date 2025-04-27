@@ -13,7 +13,7 @@ import { PromptData } from "@/types"
 
 export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: React.Dispatch<React.SetStateAction<PromptData | null>> }) {
   return (
-    <div className="w-64 border-r h-screen flex flex-col">
+    <div className="w-72 border-r h-screen flex flex-col">
       <div className="p-4 border-b">
         <Link href="/search">
           <Button variant="outline" className="w-full justify-start">
@@ -43,7 +43,7 @@ export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: 
                 ) : (
                   <Folder className="h-4 w-4 mr-2" />
                 )}
-                <span className="text-sm truncate">{collection.prompt.length > 20 ? `${collection.prompt.slice(0, 20)}...` : collection.prompt}</span>
+                <span className="text-sm truncate">{collection.prompt.length > 30 ? `${collection.prompt.slice(0, 30)}...` : collection.prompt}</span>
               </div>
 
               {prompts[collection.id] && <CollectionTree collectionId={collection.id} />}
