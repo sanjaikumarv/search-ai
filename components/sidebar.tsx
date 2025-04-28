@@ -12,15 +12,15 @@ import { PromptData } from "@/types"
 import SearchInput from "./SearchInput"
 // import { getCollections } from "@/app/actions/search-actions"
 
-export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: React.Dispatch<React.SetStateAction<PromptData | null>> }) {
+export function Sidebar({ prompts, setData, fetchData }: { prompts: PromptData[]; setData: React.Dispatch<React.SetStateAction<PromptData | null>>, fetchData: () => Promise<void> }) {
   return (
     <div className="w-[350px] border-r h-screen flex flex-col">
-      <SearchInput setData={setData} />
+      <SearchInput fetchData={fetchData} setData={setData} />
       <div className="px-4 pt-4">
         <h2 className="font-semibold">Collections</h2>
       </div>
       <ScrollArea className="flex-1">
-        <div className="p-2">
+        <div className="p-2 max-h-[550px] overflow-y-scroll">
           {prompts.map(({ node: collection }: any) => (
             <div key={collection.id} className="mb-2">
               <div

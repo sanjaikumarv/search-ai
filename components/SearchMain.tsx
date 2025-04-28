@@ -14,21 +14,22 @@ export default function SearchMain() {
 
     const [data, setData] = useState<PromptData | null>(null)
     const [prompts, setPrompts] = useState<PromptData[] | null>(null)
+
+    async function fetchData() {
+        const data = await getAllPrompts();
+        setPrompts(data || []);
+        const lastData = data?.[data.length - 1]?.node
+        setData({ prompt: lastData.prompt, languages: JSON.parse(lastData.languages) })
+    }
     useEffect(() => {
-        async function fetchData() {
-            const data = await getAllPrompts();
-            setPrompts(data || []);
-            const lastData = data?.[data.length - 1]?.node
-            setData({ prompt: lastData.prompt, languages: JSON.parse(lastData.languages) })
-        }
-        fetchData();
-    }, [data?.prompt])
+        fetchData()
+    }, [])
 
 
     return (
         <div>
             <div className="flex h-screen">
-                <Sidebar prompts={prompts || []} setData={setData} />
+                <Sidebar fetchData={fetchData} prompts={prompts || []} setData={setData} />
                 <div className="flex-1 mt-5">
                     {data &&
                         <ArcDiagram data={data} />

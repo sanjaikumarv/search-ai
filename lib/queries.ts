@@ -117,4 +117,6 @@ export const getQueryFromContent = (inputQuery: string) => `
     and need some code example from the codeExample json key in string format.
 
     Provide detailed all language information corresponding to my ${inputQuery}.
+
+    if ${inputQuery} not related to any data or languages please given empty json".
   `;

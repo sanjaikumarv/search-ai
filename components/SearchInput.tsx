@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input"
 import { getDataByAI, savePrompts } from "@/lib/db.utils"
 import { PromptData } from "@/types"
 
-export default function SearchInput({ setData }: { setData: React.Dispatch<React.SetStateAction<PromptData | null>> }) {
+export default function SearchInput({ setData, fetchData }: { setData: React.Dispatch<React.SetStateAction<PromptData | null>>, fetchData: () => Promise<void> }) {
   const [query, setQuery] = useState("")
   const [isSearching, setIsSearching] = useState(false)
 
@@ -18,9 +18,13 @@ export default function SearchInput({ setData }: { setData: React.Dispatch<React
     setIsSearching(true)
     try {
       const { languages = [], prompt = "" } = await getDataByAI(query)
-      if (languages.length > 0 && !!prompt)
+      if (languages.length > 0 && !!prompt) {
         await savePrompts({ prompt: query, languages: languages })
-      setData({ prompt: prompt, languages: languages })
+        await fetchData()
+        setData({ prompt: prompt, languages: languages })
+      } else {
+        window.alert("No data matching your query")
+      }
       setIsSearching(false)
     } catch {
       setIsSearching(false)
