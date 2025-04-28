@@ -1,65 +1,24 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client"
 
 import { useEffect, useRef, useState } from "react"
 import * as d3 from "d3"
-import { ExternalLink, ChevronRight, Search, ZoomIn, ZoomOut, RefreshCw } from "lucide-react"
+import { ExternalLink, ChevronRight } from "lucide-react"
+import { Language, PromptData, Resource, TechStack } from "@/types"
 
-export interface Resource {
-    title: string
-    url: string
-    description: string
-}
-
-export interface TechStack {
-    name: string
-    description: string
-    isRoot?: boolean
-    category: string
-    details: string[]
-    useCases: string[]
-    resources: Resource[]
-    techStacks?: TechStack[]
-}
-
-export interface Language {
-    name: string
-    description: string
-    isRoot?: boolean
-    category: string
-    codeExample: string
-    details: string[]
-    useCases: string[]
-    resources: Resource[]
-    techStacks?: TechStack[]
-}
-
-export interface TechData {
-    prompt: string
-    languages: Language[]
-}
-
-interface Node {
+// Define the Node type with the required properties
+type Node = {
     id: string
     name: string
     category: string
-    codeExample: string
     description: string
+    codeExample?: string
     children?: Node[]
-    _children?: Node[] // Collapsed nodes
-    x?: number
-    y?: number
-    x0?: number
-    y0?: number
-    depth?: number
-    parent?: Node
-    data?: any
+    data?: Language | TechStack
 }
 
-interface FlowDiagramProps {
-    data: TechData
-}
 
-export default function ArcDiagram({ data }) {
+export default function ArcDiagram({ data }: { data: PromptData }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
 
 
@@ -68,11 +27,8 @@ export default function ArcDiagram({ data }) {
     const detailsPanelRef = useRef<HTMLDivElement>(null)
     const [selectedNode, setSelectedNode] = useState<Node | null>(null)
     const [dimensions, setDimensions] = useState({ width: 340, height: 700 })
-    const [zoomLevel, setZoomLevel] = useState(1)
-    const [searchTerm, setSearchTerm] = useState("")
-
     // Process data to create hierarchical structure
-    const processData = (data: TechData): Node => {
+    const processData = (data: PromptData): Node => {
         // Create root node
         const root: Node = {
             id: "root",
@@ -147,10 +103,10 @@ export default function ArcDiagram({ data }) {
         const innerHeight = height - margin.top - margin.bottom
 
         // Create a group for the diagram with zoom transform
-        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top}) scale(${zoomLevel})`)
+        const g = svg.append("g").attr("transform", `translate(${margin.left},${margin.top}) scale(${1})`)
 
         // Create tree layout - vertical orientation
-        const treeLayout = d3.tree<Node>().size([innerWidth / zoomLevel, innerHeight / zoomLevel])
+        const treeLayout = d3.tree<Node>().size([innerWidth / 1, innerHeight / 1])
 
         // Create hierarchy
         const root = d3.hierarchy(hierarchyData) as d3.HierarchyNode<Node>
@@ -171,11 +127,11 @@ export default function ArcDiagram({ data }) {
             .attr("d", (d) => {
                 // Start at the bottom of the source node
                 const sourceX = d.source.x
-                const sourceY = d.source.y + nodeHeight / 2
+                const sourceY = (d.source.y ?? 0) + nodeHeight / 2
 
                 // End at the top of the target node
                 const targetX = d.target.x
-                const targetY = d.target.y - nodeHeight / 2
+                const targetY = (d.target.y ?? 0) - nodeHeight / 2
 
                 // Control points for the curve
                 const midY = (sourceY + targetY) / 2
@@ -192,7 +148,7 @@ export default function ArcDiagram({ data }) {
             .attr("stroke-dasharray", (d) => {
                 // Make some links dashed based on some condition
                 // For example, links to nodes with even indices
-                const targetIndex = d.target.data.id.split("_").pop()
+                const targetIndex = d.target.data.id.split("_").pop() || "0"
                 return Number.parseInt(targetIndex) % 2 === 0 ? "5,5" : "none"
             })
 
@@ -203,15 +159,14 @@ export default function ArcDiagram({ data }) {
             .enter()
             .append("g")
             .attr("class", "node")
-            .attr("transform", (d) => `translate(${d.x - nodeWidth / 2},${d.y - nodeHeight / 2})`)
+            .attr("transform", (d) => `translate(${(d.x ?? 0) - nodeWidth / 2},${(d.y ?? 0) - nodeHeight / 2})`)
             .style("cursor", "pointer")
             .on("click", (event, d) => {
                 event.stopPropagation()
                 handleNodeClick(d.data)
             })
-            .attr("opacity", (d) => {
-                if (!searchTerm) return 1
-                return d.data.name.toLowerCase().includes(searchTerm.toLowerCase()) ? 1 : 0.3
+            .attr("opacity", () => {
+                return 1
             })
 
         // Add rectangles for nodes
@@ -283,8 +238,8 @@ export default function ArcDiagram({ data }) {
             .enter()
             .append("circle")
             .attr("class", "connection-point")
-            .attr("cx", (d) => d.source.x)
-            .attr("cy", (d) => d.source.y + nodeHeight / 2)
+            .attr("cx", (d) => d.source.x ?? 0)
+            .attr("cy", (d) => d.source.y ?? 0 + nodeHeight / 2)
             .attr("r", 3)
             .attr("fill", "#999")
 
@@ -293,11 +248,11 @@ export default function ArcDiagram({ data }) {
             .enter()
             .append("circle")
             .attr("class", "connection-point-target")
-            .attr("cx", (d) => d.target.x)
-            .attr("cy", (d) => d.target.y - nodeHeight / 2)
+            .attr("cx", (d) => d.target.x ?? 0)
+            .attr("cy", (d) => d.target.y ?? 0 - nodeHeight / 2)
             .attr("r", 3)
             .attr("fill", "#999")
-    }, [data, dimensions, selectedNode, zoomLevel, searchTerm])
+    }, [data, dimensions, selectedNode, 1])
 
     // Handle window resize
     useEffect(() => {
@@ -324,7 +279,7 @@ export default function ArcDiagram({ data }) {
             // If details panel exists and is open
             if (detailsPanelRef.current && selectedNode) {
                 // Check if click was outside the details panel and not on an SVG element (diagram)
-                if (!detailsPanelRef.current.contains(event.target as Node) && !(event.target instanceof SVGElement)) {
+                if (!detailsPanelRef.current.contains(event.target as any) && !(event.target instanceof SVGElement)) {
                     closeDetailsPanel()
                 }
             }
