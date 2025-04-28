@@ -9,19 +9,13 @@ import { ChevronDown, ChevronRight, Search, FolderOpen, Folder } from "lucide-re
 import { Button } from "@/components/ui/button"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { PromptData } from "@/types"
+import SearchInput from "./SearchInput"
 // import { getCollections } from "@/app/actions/search-actions"
 
 export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: React.Dispatch<React.SetStateAction<PromptData | null>> }) {
   return (
-    <div className="w-72 border-r h-screen flex flex-col">
-      <div className="p-4 border-b">
-        <Link href="/">
-          <Button variant="outline" className="w-full justify-start">
-            <Search className="mr-2 h-4 w-4" />
-            New Search
-          </Button>
-        </Link>
-      </div>
+    <div className="w-[350px] border-r h-screen flex flex-col">
+      <SearchInput setData={setData} />
       <div className="px-4 pt-4">
         <h2 className="font-semibold">Collections</h2>
       </div>

@@ -19,19 +19,19 @@ export default function SearchMain() {
         async function fetchData() {
             const data = await getAllPrompts();
             setPrompts(data || []);
+            const lastData = data?.[data.length - 1]?.node
+            setData({ prompt: lastData.prompt, languages: JSON.parse(lastData.languages) })
         }
         fetchData();
     }, [data?.prompt])
 
-
+    console.log("data", data)
 
     return (
         <div>
             <div className="flex h-screen">
                 <Sidebar prompts={prompts || []} setData={setData} />
                 <div className="flex-1 mt-5">
-                    <SearchInput setData={setData} />
-
                     {data &&
                         <ArcDiagram data={data} />
                     }

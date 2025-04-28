@@ -321,12 +321,12 @@ export default function ArcDiagram({ data }: { data: PromptData }) {
 
     return (
         <div className="" ref={containerRef}>
-            <div className="max-w-7xl mx-auto">
+            <div className={`max-w-7xl mx-auto ${selectedNode ? "flex" : "block"} flex-col md:flex-row gap-4`}>
                 {/* Left side - Diagram */}
                 <div className="">
 
                     {/* Diagram */}
-                    <div className="rounded-lg shadow-lg ">
+                    <div onClick={closeDetailsPanel} className="rounded-lg shadow-lg ">
                         <svg
                             ref={svgRef}
                             width={dimensions.width}
@@ -338,7 +338,7 @@ export default function ArcDiagram({ data }: { data: PromptData }) {
                 </div>
 
                 {/* Right side - Details panel */}
-                <div ref={detailsPanelRef} className="w-full  overflow-y-scroll fixed md:w-2/5  top-0 right-0 bg-white rounded-bl-lg rounded-tl-lg shadow-lg ">
+                <div ref={detailsPanelRef} className="w-full overflow-y-scroll fixed md:w-2/5  top-0 right-0 bg-white rounded-bl-lg rounded-tl-lg shadow-lg ">
                     {selectedNode && selectedNode.data && (
                         <div className="h-screen overflow-visible">
                             {/* Header */}
@@ -354,6 +354,7 @@ export default function ArcDiagram({ data }: { data: PromptData }) {
                                             {selectedNode.category}
                                         </span>
                                     </div>
+                                    <button className="text-gray-800 text-3xl" onClick={() => setSelectedNode(null)}>x</button>
                                 </div>
                             </div>
 

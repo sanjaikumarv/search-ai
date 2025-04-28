@@ -27,12 +27,8 @@ export default function SearchInput({ setData }: { setData: React.Dispatch<React
       window.alert("Unable to generate response");
     }
   }
-
-
-
   return (
-    <div>
-      <h1 className="text-3xl font-bold mb-8 text-center">AI Search</h1>
+    <div className="mt-5 mx-2">
       <form onSubmit={handleSearch} className="mb-8 mx-auto max-w-3xl">
         <div className="flex gap-2">
           <Input
@@ -43,17 +39,17 @@ export default function SearchInput({ setData }: { setData: React.Dispatch<React
             className="flex-1"
           />
           <Button type="submit" disabled={isSearching}>
-            {isSearching ? (
-              <div className="flex items-center">
-                <div className="animate-spin mr-2 h-4 w-4 border-2 border-current border-t-transparent rounded-full" />
-                Searching...
-              </div>
-            ) : (
-              <>
-                <Search className="mr-2 h-4 w-4" />
-                Search
-              </>
-            )}
+            <div className="flex items-center">
+              {isSearching ? (
+                <div className="animate-spin h-4 w-4 border-2 border-current border-t-transparent rounded-full" >
+                  ...
+                </div>
+              ) : (
+                <div className="">
+                  <Search className="h-4 w-4" />
+                </div>
+              )}
+            </div>
           </Button>
         </div>
       </form>
