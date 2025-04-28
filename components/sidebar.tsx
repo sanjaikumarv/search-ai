@@ -15,7 +15,7 @@ export function Sidebar({ prompts, setData }: { prompts: PromptData[]; setData: 
   return (
     <div className="w-72 border-r h-screen flex flex-col">
       <div className="p-4 border-b">
-        <Link href="/search">
+        <Link href="/">
           <Button variant="outline" className="w-full justify-start">
             <Search className="mr-2 h-4 w-4" />
             New Search
