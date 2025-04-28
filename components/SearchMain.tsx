@@ -5,7 +5,6 @@ import type React from "react"
 
 import { useEffect, useState } from "react"
 import ArcDiagram from "@/components/ArcDiagram"
-import SearchInput from "./SearchInput"
 import { Sidebar } from "./sidebar"
 import { getAllPrompts } from "@/lib/db.utils"
 import { PromptData } from "@/types"
@@ -25,7 +24,6 @@ export default function SearchMain() {
         fetchData();
     }, [data?.prompt])
 
-    console.log("data", data)
 
     return (
         <div>
