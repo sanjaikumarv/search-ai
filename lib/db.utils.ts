@@ -40,7 +40,7 @@ export async function savePrompts(payloadData: PromptData) {
 
         return data
     } catch (error) {
-        window.alert(error);
+
         return { data: null, success: false, error };
     }
 }
@@ -58,11 +58,7 @@ export async function getDataByAI(message: string) {
             },
         });
         return JSON.parse(response?.data?.choices[0]?.message?.content)
-    } catch (error: unknown) {
-        if (error instanceof Error && error.message) {
-            window.alert(error.message);
-        } else {
-            window.alert("An unexpected error occurred.");
-        }
+    } catch {
+        window.alert("Unable to generate response");
     }
 }

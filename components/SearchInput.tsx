@@ -18,16 +18,13 @@ export default function SearchInput({ setData }: { setData: React.Dispatch<React
     setIsSearching(true)
     try {
       const { languages = [], prompt = "" } = await getDataByAI(query)
-      await savePrompts({ prompt: query, languages: languages })
+      if (languages.length > 0 && !!prompt)
+        await savePrompts({ prompt: query, languages: languages })
       setData({ prompt: prompt, languages: languages })
       setIsSearching(false)
-    } catch (error: unknown) {
+    } catch {
       setIsSearching(false)
-      if (error instanceof Error && error.message) {
-        window.alert(error.message);
-      } else {
-        window.alert("An unexpected error occurred.");
-      }
+      window.alert("Unable to generate response");
     }
   }
 
